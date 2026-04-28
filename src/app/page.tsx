@@ -16,20 +16,20 @@ interface Activity {
 
 const initialMetricCards: Omit<MetricCardData, 'value' | 'chartData' | 'secondaryChartData'>[] = [
   {
+    title: 'Total Order Volume',
+    color: 'text-green-600',
+    dataUrl: '/data/total-order-volume.csv',
+    primaryTitle: 'By Product Category',
+    secondaryDataUrl: '/data/total-order-volume-by-lob.csv',
+    secondaryTitle: 'By Line of Business',
+  },
+  {
     title: 'Total Spend',
     color: 'text-blue-600',
     units: '$',
     dataUrl: '/data/total-spend.csv',
-    primaryTitle: 'By Product',
+    primaryTitle: 'By Product Category',
     secondaryDataUrl: '/data/total-spend-by-lob.csv',
-    secondaryTitle: 'By Line of Business',
-  },
-  {
-    title: 'Total Order Volume',
-    color: 'text-green-600',
-    dataUrl: '/data/total-order-volume.csv',
-    primaryTitle: 'By Product',
-    secondaryDataUrl: '/data/total-order-volume-by-lob.csv',
     secondaryTitle: 'By Line of Business',
   },
 ];
@@ -47,73 +47,24 @@ const recentActivities: Activity[] = [
   { description: 'Report generated: Q1 Summary' },
 ];
 
-const deviceDataUrls: Record<string, string> = {
-  CGM:  '/data/device-adherence-cgm.csv',
-  CPAP: '/data/device-adherence-cpap.csv',
-};
-
-const faxOnlineColors: Record<string, string> = {
-  'Fax':    '#8884d8',
-  'Online': '#82ca9d',
-};
-
-function FaxOnlineChart() {
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-
-  useEffect(() => {
-    loadCsv('/data/fax-vs-online-usage.csv').then(({ chartData }) => setChartData(chartData));
-  }, []);
-
-  const categories = chartData.length ? Object.keys(chartData[0]).filter((k) => k !== 'name') : [];
-
-  return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Fax vs Online Usage</h2>
-      <ResponsiveContainer width="100%" height={50}>
-        <BarChart layout="vertical" data={chartData} barSize={20} margin={{ bottom: 0 }}>
-          <XAxis type="number" hide />
-          <YAxis type="category" dataKey="name" hide />
-          <Tooltip />
-          <Legend />
-          {categories.map((cat) => (
-            <Bar key={cat} dataKey={cat} name={cat} stackId="a" fill={faxOnlineColors[cat] ?? '#8884d8'} />
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
 const adherenceColors: Record<string, string> = {
   'At-Risk':       '#ef4444',
   'Emerging Risk': '#f59e0b',
   'Adherent':      '#22c55e',
 };
 
-function DeviceAdherenceChart() {
-  const [selectedDevice, setSelectedDevice] = useState('CGM');
+function AdherenceChart({ title, dataUrl }: { title: string; dataUrl: string }) {
   const [chartData, setChartData] = useState<ChartData[]>([]);
 
   useEffect(() => {
-    loadCsv(deviceDataUrls[selectedDevice]).then(({ chartData }) => setChartData(chartData));
-  }, [selectedDevice]);
+    loadCsv(dataUrl).then(({ chartData }) => setChartData(chartData));
+  }, [dataUrl]);
 
   const categories = chartData.length ? Object.keys(chartData[0]).filter((k) => k !== 'name') : [];
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Device Adherence</h2>
-        <select
-          value={selectedDevice}
-          onChange={(e) => setSelectedDevice(e.target.value)}
-          className="text-sm border border-gray-300 rounded px-2 py-1 bg-white"
-        >
-          {Object.keys(deviceDataUrls).map((device) => (
-            <option key={device} value={device}>{device}</option>
-          ))}
-        </select>
-      </div>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">{title}</h2>
       <ResponsiveContainer width="100%" height={50}>
         <BarChart layout="vertical" data={chartData} barSize={20} margin={{ bottom: 0 }}>
           <XAxis type="number" hide />
@@ -125,6 +76,42 @@ function DeviceAdherenceChart() {
           ))}
         </BarChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+function AvgDeliveryTimeChart() {
+  const [data, setData] = useState<{ product: string; hours: number }[]>([]);
+
+  useEffect(() => {
+    fetch('/data/avg-delivery-time.csv')
+      .then((r) => r.text())
+      .then((csv) => {
+        const parsed = Papa.parse(csv, { header: true });
+        setData(
+          (parsed.data as { product: string; hours: string }[])
+            .filter((r) => r.product)
+            .map((r) => ({ product: r.product, hours: parseFloat(r.hours) }))
+        );
+      });
+  }, []);
+
+  const maxHours = data.length ? Math.ceil(Math.max(...data.map((d) => d.hours)) / 12) * 12 : 132;
+  const ticks = Array.from({ length: maxHours / 12 + 1 }, (_, i) => i * 12);
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow flex flex-col h-full">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Avg. Order Delivery Time by Product Category</h2>
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart layout="vertical" data={data} margin={{ top: 4, right: 32, left: 8, bottom: 4 }}>
+            <XAxis type="number" ticks={ticks} tickFormatter={(v) => `${v}h`} tick={{ fontSize: 11 }} />
+            <YAxis type="category" dataKey="product" width={90} tick={{ fontSize: 12 }} />
+            <Tooltip formatter={(v) => [`${v} hours`, 'Avg. Delivery Time']} />
+            <Bar dataKey="hours" fill="#6366f1" radius={[0, 4, 4, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
@@ -146,7 +133,7 @@ function FacilityTable() {
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-100">
-            {['Facility', 'Order Volume', 'Total Spend'].map((col) => (
+            {['Referring Facility', 'Order Volume', 'Total Spend'].map((col) => (
               <th key={col} className="sticky top-0 bg-gray-100 border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700 z-10">
                 {col}
               </th>
@@ -222,15 +209,28 @@ export default function Home(): JSX.Element {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Executive Summary</h1>
 
-        <div className="grid grid-cols-[11rem_1fr_1fr] gap-6 mb-8">
-          <div className="flex flex-col gap-4 h-full">
+        <div className="flex gap-6">
+          {/* Sidebar */}
+          <div className="w-44 flex-shrink-0 flex flex-col gap-4">
             <div className="bg-white p-4 rounded-lg shadow flex-1 flex flex-col justify-center">
               <p className="text-sm font-medium text-gray-500">PMPM Spend</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">$842</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">$9.70</p>
             </div>
             <div className="bg-white p-4 rounded-lg shadow flex-1 flex flex-col justify-center">
-              <p className="text-sm font-medium text-gray-500">Calls per Order</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">1.2</p>
+              <p className="text-sm font-medium text-gray-500">Clean Claim Rate</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">95%</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow flex-1 flex flex-col justify-center">
+              <p className="text-sm font-medium text-gray-500">Average Delivery Time</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">34 hours</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow flex-1 flex flex-col justify-center">
+              <p className="text-sm font-medium text-gray-500">48-hour Delivery Rate</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">73%</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow flex-1 flex flex-col justify-center">
+              <p className="text-sm font-medium text-gray-500">Online Ordering Rate</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">81%</p>
             </div>
             <div className="bg-white p-4 rounded-lg shadow flex-1 flex flex-col justify-center">
               <p className="text-sm font-medium text-gray-500">Patient NPS</p>
@@ -241,20 +241,44 @@ export default function Home(): JSX.Element {
               <p className="text-3xl font-bold text-gray-900 mt-2">68</p>
             </div>
           </div>
-          {metrics[0] && <MetricCard card={metrics[0]} className="h-full" />}
-          {metrics[1] && <MetricCard card={metrics[1]} className="h-full" />}
-        </div>
 
-        <div className="grid grid-cols-2 gap-6 items-start">
-          <div ref={chartsColRef} className="flex flex-col gap-6">
-            <DeviceAdherenceChart />
-            <FaxOnlineChart />
-          </div>
-          <div
-            className="overflow-y-auto rounded-lg"
-            style={{ height: chartsHeight > 0 ? chartsHeight : undefined }}
-          >
-            <FacilityTable />
+          {/* Main content */}
+          <div className="flex-1 flex flex-col gap-6">
+            <div className="grid grid-cols-2 gap-6 items-stretch">
+              {metrics[0] && <MetricCard card={metrics[0]} />}
+              <AvgDeliveryTimeChart />
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 items-start">
+              <div ref={chartsColRef} className="flex flex-col gap-6">
+                <AdherenceChart title="CGM Adherence" dataUrl="/data/device-adherence-cgm.csv" />
+                <AdherenceChart title="CPAP Adherence" dataUrl="/data/device-adherence-cpap.csv" />
+              </div>
+              <div
+                className="overflow-y-auto rounded-lg"
+                style={{ height: chartsHeight > 0 ? chartsHeight : undefined }}
+              >
+                <FacilityTable />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 items-stretch">
+              {metrics[1] && <MetricCard card={metrics[1]} />}
+              <div className="flex flex-col gap-4">
+                <div className="bg-white p-6 rounded-lg shadow flex-1 flex flex-col justify-center">
+                  <p className="text-sm font-medium text-gray-500">% of Orders Validated</p>
+                  <p className="text-4xl font-bold text-gray-900 mt-2">94.2%</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow flex-1 flex flex-col justify-center">
+                  <p className="text-sm font-medium text-gray-500">% of Claims Paid to Verse</p>
+                  <p className="text-4xl font-bold text-gray-900 mt-2">88.7%</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow flex-1 flex flex-col justify-center">
+                  <p className="text-sm font-medium text-gray-500">Average Subcontractor AR Days</p>
+                  <p className="text-4xl font-bold text-gray-900 mt-2">22.4</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
