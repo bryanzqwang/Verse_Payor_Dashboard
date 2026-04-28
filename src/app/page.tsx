@@ -104,11 +104,11 @@ function AvgDeliveryTimeChart() {
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Avg. Order Delivery Time by Product Category</h2>
       <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart layout="vertical" data={data} margin={{ top: 4, right: 32, left: 8, bottom: 4 }}>
+          <BarChart layout="vertical" data={data} margin={{ top: 4, right: 32, left: 0, bottom: 4 }}>
             <XAxis type="number" ticks={ticks} tickFormatter={(v) => `${v}h`} tick={{ fontSize: 11 }} />
-            <YAxis type="category" dataKey="product" width={90} tick={{ fontSize: 12 }} />
+            <YAxis type="category" dataKey="product" width={200} tick={{ fontSize: 11 }} interval={0} />
             <Tooltip formatter={(v) => [`${v} hours`, 'Avg. Delivery Time']} />
-            <Bar dataKey="hours" fill="#6366f1" radius={[0, 4, 4, 0]} />
+            <Bar dataKey="hours" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={12} />
           </BarChart>
         </ResponsiveContainer>
       </div>

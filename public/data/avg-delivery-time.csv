@@ -1,9 +1,21 @@
 product,hours
-CGM,36
-CPAP,48
-Nebulizer,60
-Wheelchair,96
-Oxygen,48
-Walker,24
-Hospital Bed,120
-Compression,12
+Ambulatory, 10
+Bath Supplies, 15
+Bed Supplies, 20
+Compression, 12
+CPAP/BiPAP Supplies, 48
+Diabetes, 36
+Enteral, 24
+Incontinence, 18
+Living Aids, 30
+Maternal, 8
+Mobility, 40
+O&P (OTS), 72
+Ostomy, 18
+Post Mastectomy, 14
+Rehabilitation, 25
+Respiratory Supplies, 48
+Skincare, 20
+Urology, 16
+Wound Care, 22
+Specialty & LTSS Products, 30
