@@ -16,6 +16,7 @@ export interface MetricCardData {
   primaryTitle?: string;
   secondaryTitle?: string;
   units?: string;
+  palette?: string[];
   value?: string;
   chartData?: ChartData[];
   secondaryChartData?: ChartData[];
@@ -26,17 +27,20 @@ const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00C49F', '#FFBB28'
 function Chart({
   chartData,
   label,
+  palette,
   onHover,
   onLeave,
 }: {
   chartData: ChartData[];
   label?: string;
+  palette?: string[];
   onHover: (value: string) => void;
   onLeave: () => void;
 }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const activePalette = palette ?? colors;
   const categories = Object.keys(chartData[0])
     .filter((key) => key !== 'name')
     .sort((a, b) => (chartData[0][b] as number) - (chartData[0][a] as number));
@@ -87,7 +91,7 @@ function Chart({
                   key={cat}
                   dataKey={cat}
                   stackId="a"
-                  fill={colors[idx % colors.length]}
+                  fill={activePalette[idx % activePalette.length]}
                   shape={CustomBar}
                   onMouseEnter={() => activateCategory(cat)}
                   onMouseLeave={clearCategory}
@@ -117,11 +121,11 @@ function Chart({
             {categories.map((cat, idx) => (
               <div
                 key={cat}
-                className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 cursor-default text-xs text-gray-700"
+                className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 cursor-default text-xs text-[#093a5b]"
                 onMouseEnter={() => activateCategory(cat)}
                 onMouseLeave={clearCategory}
               >
-                <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: colors[idx % colors.length] }} />
+                <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ backgroundColor: activePalette[idx % activePalette.length] }} />
                 {cat}
               </div>
             ))}
@@ -137,13 +141,14 @@ export function MetricCard({ card, className }: { card: MetricCardData; classNam
 
   return (
     <div className={`bg-white p-6 rounded-lg shadow min-h-[500px] flex flex-col ${className ?? ''}`}>
-      <h2 className="text-xl font-semibold text-gray-800 mb-2">{card.title}</h2>
+      <h2 className="text-xl font-semibold text-[#093a5b] mb-2">{card.title}</h2>
       <p className={`text-5xl font-bold ${card.color} mt-4 mb-6 text-center`}>{card.units ?? ''}{displayValue}</p>
       <div className="flex gap-6 flex-1">
         {card.chartData && (
           <Chart
             chartData={card.chartData}
             label={card.primaryTitle}
+            palette={card.palette}
             onHover={setDisplayValue}
             onLeave={() => setDisplayValue(card.value || '0')}
           />
@@ -153,6 +158,7 @@ export function MetricCard({ card, className }: { card: MetricCardData; classNam
             <Chart
               chartData={card.secondaryChartData}
               label={card.secondaryTitle}
+              palette={card.palette}
               onHover={setDisplayValue}
               onLeave={() => setDisplayValue(card.value || '0')}
             />
