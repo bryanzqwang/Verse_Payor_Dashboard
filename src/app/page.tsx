@@ -259,7 +259,7 @@ export default function Home(): JSX.Element {
                 onClick={() => selectTab(tab.id)}
                 className={`w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors ${
                   activeTab === tab.id
-                    ? 'bg-blue-50 text-blue-700 font-semibold border-l-4 border-blue-600 pl-2'
+                    ? 'bg-[#e6f2ff] text-[#0099ff] font-semibold border-l-4 border-[#0099ff] pl-2'
                     : 'text-gray-600 font-medium hover:bg-gray-50 hover:text-[#093a5b]'
                 }`}
               >
@@ -291,7 +291,7 @@ export default function Home(): JSX.Element {
                   onClick={() => selectTab(tab.id)}
                   className={`w-full text-left px-4 py-3 text-sm transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-blue-50 text-blue-700 font-semibold'
+                      ? 'bg-[#e6f2ff] text-[#0099ff] font-semibold'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
