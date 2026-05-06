@@ -8,7 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } fro
 const initialMetricCards: Omit<MetricCardData, 'value' | 'chartData' | 'secondaryChartData'>[] = [
   {
     title: 'Total Order Volume',
-    color: 'text-green-600',
+    color: 'text-[#093a5b]',
     dataUrl: '/data/total-order-volume.csv',
     primaryTitle: 'By Product Category',
     secondaryDataUrl: '/data/total-order-volume-by-lob.csv',
@@ -17,7 +17,7 @@ const initialMetricCards: Omit<MetricCardData, 'value' | 'chartData' | 'secondar
   },
   {
     title: 'Total Spend',
-    color: 'text-blue-600',
+    color: 'text-[#093a5b]',
     units: '$',
     dataUrl: '/data/total-spend.csv',
     primaryTitle: 'By Product Category',
@@ -69,7 +69,16 @@ function AdherenceChart({ title, dataUrl }: { title: string; dataUrl: string }) 
           <XAxis type="number" hide />
           <YAxis type="category" dataKey="name" hide />
           <Tooltip />
-          <Legend />
+          <Legend content={() => (
+            <ul className="flex gap-4 justify-center text-sm font-medium text-gray-500 list-none p-0 m-0">
+              {adherenceSeverityOrder.map((key) => (
+                <li key={key} className="flex items-center gap-1.5">
+                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: adherenceColors[key] }} />
+                  {key}
+                </li>
+              ))}
+            </ul>
+          )} />
           {categories.map((cat) => (
             <Bar key={cat} dataKey={cat} name={cat} stackId="a" fill={adherenceColors[cat] ?? '#8884d8'} />
           ))}
