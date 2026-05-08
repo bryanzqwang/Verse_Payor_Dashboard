@@ -52,6 +52,23 @@ function StatBox({ label, value }: { label: string; value: string }) {
   );
 }
 
+function ServiceCategoryCard({ category, slaRate, avgDelivery }: { category: string; slaRate: string; avgDelivery: string }) {
+  return (
+    <div className="bg-white rounded-lg shadow p-7 flex flex-col gap-5">
+      <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">{category}</p>
+      <div>
+        <p className="text-xs text-gray-400 mb-2">SLA Adherence Rate</p>
+        <p className="text-3xl font-bold text-[#093a5b]">{slaRate}</p>
+      </div>
+      <hr className="border-gray-100" />
+      <div>
+        <p className="text-xs text-gray-400 mb-2">Average Delivery Time</p>
+        <p className="text-3xl font-bold text-[#093a5b]">{avgDelivery}</p>
+      </div>
+    </div>
+  );
+}
+
 function AdherenceChart({ title, dataUrl }: { title: string; dataUrl: string }) {
   const [chartData, setChartData] = useState<ChartData[]>([]);
 
@@ -308,7 +325,7 @@ export default function Home(): JSX.Element {
             <h1 className="text-3xl font-bold text-[#093a5b]">Overview</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatBox label="Average Delivery Time" value="34 hours" />
-              <StatBox label="PMPM Spend" value="$9.70" />
+              <StatBox label="PMPM Spend (3-month lag)" value="$9.70" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
               {metrics[0] && <MetricCard card={metrics[0]} />}
@@ -323,10 +340,10 @@ export default function Home(): JSX.Element {
           <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-bold text-[#093a5b]">Service Quality</h1>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatBox label="Average Delivery Time" value="34 hours" />
-              <StatBox label="48-hour Delivery Rate" value="73%" />
-              <StatBox label="Patient NPS" value="72" />
-              <StatBox label="Clinician NPS" value="68" />
+              <ServiceCategoryCard category="Bent Metal" slaRate="91%" avgDelivery="18h" />
+              <ServiceCategoryCard category="Discharge" slaRate="87%" avgDelivery="6h" />
+              <ServiceCategoryCard category="Mail Order" slaRate="94%" avgDelivery="48h" />
+              <ServiceCategoryCard category="Oxygen" slaRate="89%" avgDelivery="24h" />
             </div>
             <div className="h-[400px] md:h-[600px]">
               <AvgDeliveryTimeChart />
@@ -339,7 +356,7 @@ export default function Home(): JSX.Element {
           <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-bold text-[#093a5b]">Utilization & Cost</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <StatBox label="PMPM Spend" value="$9.70" />
+              <StatBox label="PMPM Spend (3-month lag)" value="$9.70" />
               <StatBox label="Clean Claim Rate" value="95%" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
