@@ -31,8 +31,8 @@ const TABS = [
   { id: 'overview',            label: 'Overview' },
   { id: 'service-quality',     label: 'Service Quality' },
   { id: 'utilization-cost',    label: 'Utilization & Cost' },
-  { id: 'disease-management',  label: 'Disease Management' },
   { id: 'referral-patterns',   label: 'Referral Patterns' },
+  { id: 'disease-management',  label: 'Disease Management' },
 ];
 
 const adherenceColors: Record<string, string> = {
@@ -325,7 +325,7 @@ export default function Home(): JSX.Element {
             <h1 className="text-3xl font-bold text-[#093a5b]">Overview</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <StatBox label="Average Delivery Time" value="34 hours" />
-              <StatBox label="PMPM Spend (3-month lag)" value="$9.70" />
+              <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
               {metrics[0] && <MetricCard card={metrics[0]} />}
@@ -356,7 +356,7 @@ export default function Home(): JSX.Element {
           <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-bold text-[#093a5b]">Utilization & Cost</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <StatBox label="PMPM Spend (3-month lag)" value="$9.70" />
+              <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
               <StatBox label="Clean Claim Rate" value="95%" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
