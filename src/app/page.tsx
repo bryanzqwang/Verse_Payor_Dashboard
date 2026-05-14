@@ -31,8 +31,8 @@ const TABS = [
   { id: 'overview',            label: 'Overview' },
   { id: 'service-quality',     label: 'Service Quality' },
   { id: 'utilization-cost',    label: 'Utilization & Cost' },
-  { id: 'disease-management',  label: 'Disease Management' },
   { id: 'referral-patterns',   label: 'Referral Patterns' },
+  { id: 'disease-management',  label: 'Disease Management' },
 ];
 
 const adherenceColors: Record<string, string> = {
