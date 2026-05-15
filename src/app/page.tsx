@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
-import Papa from 'papaparse';
-import { MetricCard, type MetricCardData, type ChartData } from '@/components/MetricCard';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useState, useEffect } from 'react';
+import { type MetricCardData } from '@/components/MetricCard';
+import { loadCsv } from '@/lib/loadCsv';
+import { Overview } from '@/components/tabs/Overview';
+import { ServiceQuality } from '@/components/tabs/ServiceQuality';
+import { UtilizationCost } from '@/components/tabs/UtilizationCost';
+import { ReferralPatterns } from '@/components/tabs/ReferralPatterns';
+import { DiseaseManagement } from '@/components/tabs/DiseaseManagement';
 
 const initialMetricCards: Omit<MetricCardData, 'value' | 'chartData' | 'secondaryChartData'>[] = [
   {
@@ -28,203 +32,12 @@ const initialMetricCards: Omit<MetricCardData, 'value' | 'chartData' | 'secondar
 ];
 
 const TABS = [
-  { id: 'overview',            label: 'Overview' },
-  { id: 'service-quality',     label: 'Service Quality' },
-  { id: 'utilization-cost',    label: 'Utilization & Cost' },
-  { id: 'referral-patterns',   label: 'Referral Patterns' },
-  { id: 'disease-management',  label: 'Disease Management' },
+  { id: 'overview',           label: 'Overview' },
+  { id: 'service-quality',    label: 'Service Quality' },
+  { id: 'utilization-cost',   label: 'Utilization & Cost' },
+  { id: 'referral-patterns',  label: 'Referral Patterns' },
+  { id: 'disease-management', label: 'Disease Management' },
 ];
-
-const adherenceColors: Record<string, string> = {
-  'Adherent':      '#b6e7fd',
-  'Emerging Risk': '#41b1fa',
-  'At-Risk':       '#093a5b',
-};
-
-const adherenceSeverityOrder = ['Adherent', 'Emerging Risk', 'At-Risk'];
-
-function StatBox({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-white p-6 rounded-lg shadow flex flex-col justify-center">
-      <p className="text-sm font-medium text-gray-500">{label}</p>
-      <p className="text-4xl font-bold text-[#093a5b] mt-2">{value}</p>
-    </div>
-  );
-}
-
-function ServiceCategoryCard({ category, slaRate, avgDelivery }: { category: string; slaRate: string; avgDelivery: string }) {
-  return (
-    <div className="bg-white rounded-lg shadow p-7 flex flex-col gap-5">
-      <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest">{category}</p>
-      <div>
-        <p className="text-xs text-gray-400 mb-2">SLA Adherence Rate</p>
-        <p className="text-3xl font-bold text-[#093a5b]">{slaRate}</p>
-      </div>
-      <hr className="border-gray-100" />
-      <div>
-        <p className="text-xs text-gray-400 mb-2">Average Delivery Time</p>
-        <p className="text-3xl font-bold text-[#093a5b]">{avgDelivery}</p>
-      </div>
-    </div>
-  );
-}
-
-function AdherenceChart({ title, dataUrl }: { title: string; dataUrl: string }) {
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-
-  useEffect(() => {
-    loadCsv(dataUrl).then(({ chartData }) => setChartData(chartData));
-  }, [dataUrl]);
-
-  const categories = chartData.length ? adherenceSeverityOrder.filter((k) => k in chartData[0]) : [];
-
-  return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-semibold text-[#093a5b] mb-4">{title}</h2>
-      <ResponsiveContainer width="100%" height={50}>
-        <BarChart layout="vertical" data={chartData} barSize={20} margin={{ bottom: 0 }}>
-          <XAxis type="number" hide />
-          <YAxis type="category" dataKey="name" hide />
-          <Tooltip />
-          <Legend content={() => (
-            <ul className="flex gap-4 justify-center text-sm font-medium text-gray-500 list-none p-0 m-0">
-              {adherenceSeverityOrder.map((key) => (
-                <li key={key} className="flex items-center gap-1.5">
-                  <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: adherenceColors[key] }} />
-                  {key}
-                </li>
-              ))}
-            </ul>
-          )} />
-          {categories.map((cat) => (
-            <Bar key={cat} dataKey={cat} name={cat} stackId="a" fill={adherenceColors[cat] ?? '#8884d8'} />
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
-function AvgDeliveryTimeChart() {
-  const [data, setData] = useState<{ product: string; hours: number }[]>([]);
-
-  useEffect(() => {
-    fetch('/data/avg-delivery-time.csv')
-      .then((r) => r.text())
-      .then((csv) => {
-        const parsed = Papa.parse(csv, { header: true });
-        setData(
-          (parsed.data as { product: string; hours: string }[])
-            .filter((r) => r.product)
-            .map((r) => ({ product: r.product, hours: parseFloat(r.hours) }))
-        );
-      });
-  }, []);
-
-  const maxHours = data.length ? Math.ceil(Math.max(...data.map((d) => d.hours)) / 12) * 12 : 132;
-  const ticks = Array.from({ length: maxHours / 12 + 1 }, (_, i) => i * 12);
-
-  return (
-    <div className="bg-white p-6 rounded-lg shadow flex flex-col h-full">
-      <h2 className="text-xl font-semibold text-[#093a5b] mb-4">Avg. Order Delivery Time by Product Category</h2>
-      <div className="flex-1 min-h-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart layout="vertical" data={data} margin={{ top: 4, right: 32, left: 0, bottom: 4 }}>
-            <XAxis type="number" ticks={ticks} tickFormatter={(v) => `${v}h`} tick={{ fontSize: 11 }} />
-            <YAxis type="category" dataKey="product" width={200} tick={{ fontSize: 11 }} interval={0} />
-            <Tooltip formatter={(v) => [`${v} hours`, 'Avg. Delivery Time']} />
-            <Bar dataKey="hours" fill="#41b1fa" radius={[0, 4, 4, 0]} barSize={12} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-function FacilityTable() {
-  const [rows, setRows] = useState<{ facility: string; orderVolume: string; totalSpend: string }[]>([]);
-  const [canScrollUp, setCanScrollUp] = useState(false);
-  const [canScrollDown, setCanScrollDown] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetch('/data/facility-metrics.csv')
-      .then((r) => r.text())
-      .then((csv) => {
-        const parsed = Papa.parse(csv, { header: true });
-        setRows((parsed.data as { facility: string; orderVolume: string; totalSpend: string }[]).filter((r) => r.facility));
-      });
-  }, []);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollDown(el.scrollHeight > el.clientHeight);
-  }, [rows]);
-
-  const handleScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollUp(el.scrollTop > 0);
-    setCanScrollDown(Math.ceil(el.scrollTop + el.clientHeight) < el.scrollHeight);
-  };
-
-  return (
-    <div className="relative rounded-lg shadow overflow-hidden">
-      <div
-        ref={scrollRef}
-        className="bg-white rounded-lg overflow-y-auto max-h-[408px]"
-        onScroll={handleScroll}
-      >
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              {['Referring Facility', 'Order Volume', 'Total Spend'].map((col) => (
-                <th key={col} className="sticky top-0 bg-gray-100 border border-gray-200 px-3 py-2 text-left font-semibold text-[#093a5b] z-10">
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                <td className="border border-gray-200 px-3 py-2 text-[#093a5b]">{row.facility}</td>
-                <td className="border border-gray-200 px-3 py-2 text-right text-[#093a5b]">{Number(row.orderVolume).toLocaleString()}</td>
-                <td className="border border-gray-200 px-3 py-2 text-right text-[#093a5b]">${Number(row.totalSpend).toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {canScrollUp && (
-        <div
-          className="absolute left-0 right-0 h-12 bg-gradient-to-b from-white to-transparent pointer-events-none z-20"
-          style={{ top: 37 }}
-        />
-      )}
-      {canScrollDown && (
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none z-20" />
-      )}
-    </div>
-  );
-}
-
-async function loadCsv(url: string): Promise<{ chartData: ChartData[]; value: string }> {
-  const response = await fetch(url);
-  const csv = await response.text();
-  const parsed = Papa.parse(csv, { header: true });
-  const data = (parsed.data as { category: string; value: string }[]).filter(item => item.category);
-  const total = data.reduce((sum, item) => sum + parseInt(item.value || '0'), 0);
-  const chartData: ChartData[] = [{
-    name: 'Total',
-    ...data.reduce((acc, item) => {
-      acc[item.category] = parseInt(item.value || '0');
-      return acc;
-    }, {} as Record<string, number>),
-  }];
-  return { chartData, value: total.toLocaleString() };
-}
 
 export default function Home(): JSX.Element {
   const [metrics, setMetrics] = useState<MetricCardData[]>([]);
@@ -269,7 +82,7 @@ export default function Home(): JSX.Element {
           </svg>
         </div>
         <div className="px-4 pb-4">
-<nav className="flex flex-col gap-1">
+          <nav className="flex flex-col gap-1">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -286,7 +99,6 @@ export default function Home(): JSX.Element {
           </nav>
         </div>
       </aside>
-
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto p-4 lg:p-8">
@@ -319,77 +131,11 @@ export default function Home(): JSX.Element {
           )}
         </div>
 
-        {/* Overview */}
-        {activeTab === 'overview' && (
-          <div className="flex flex-col gap-6">
-            <h1 className="text-3xl font-bold text-[#093a5b]">Overview</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <StatBox label="Average Delivery Time" value="34 hours" />
-              <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-              {metrics[0] && <MetricCard card={metrics[0]} />}
-              <AvgDeliveryTimeChart />
-            </div>
-            <FacilityTable />
-          </div>
-        )}
-
-        {/* Service Quality */}
-        {activeTab === 'service-quality' && (
-          <div className="flex flex-col gap-6">
-            <h1 className="text-3xl font-bold text-[#093a5b]">Service Quality</h1>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <ServiceCategoryCard category="Bent Metal" slaRate="91%" avgDelivery="18h" />
-              <ServiceCategoryCard category="Discharge" slaRate="87%" avgDelivery="6h" />
-              <ServiceCategoryCard category="Mail Order" slaRate="94%" avgDelivery="37h" />
-              <ServiceCategoryCard category="Oxygen" slaRate="89%" avgDelivery="24h" />
-            </div>
-            <div className="h-[400px] md:h-[600px]">
-              <AvgDeliveryTimeChart />
-            </div>
-          </div>
-        )}
-
-        {/* Utilization & Cost */}
-        {activeTab === 'utilization-cost' && (
-          <div className="flex flex-col gap-6">
-            <h1 className="text-3xl font-bold text-[#093a5b]">Utilization & Cost</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
-              <StatBox label="% of Claims Paid to Verse" value="88.7%" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {metrics[0] && <MetricCard card={metrics[0]} />}
-              {metrics[1] && <MetricCard card={metrics[1]} />}
-            </div>
-          </div>
-        )}
-
-        {/* Disease Management */}
-        {activeTab === 'disease-management' && (
-          <div className="flex flex-col gap-6">
-            <h1 className="text-3xl font-bold text-[#093a5b]">Disease Management</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <AdherenceChart title="CGM Adherence" dataUrl="/data/device-adherence-cgm.csv" />
-              <AdherenceChart title="CPAP Adherence" dataUrl="/data/device-adherence-cpap.csv" />
-            </div>
-          </div>
-        )}
-
-        {/* Referral Patterns */}
-        {activeTab === 'referral-patterns' && (
-          <div className="flex flex-col gap-6">
-            <h1 className="text-3xl font-bold text-[#093a5b]">Referral Patterns</h1>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatBox label="Online Ordering Rate" value="81%" />
-              <StatBox label="% of Orders Validated" value="94.2%" />
-              <StatBox label="% of Claims Paid to Verse" value="88.7%" />
-              <StatBox label="Avg. Subcontractor AR Days" value="22.4" />
-            </div>
-            <FacilityTable />
-          </div>
-        )}
+        {activeTab === 'overview'           && <Overview metrics={metrics} />}
+        {activeTab === 'service-quality'    && <ServiceQuality />}
+        {activeTab === 'utilization-cost'   && <UtilizationCost metrics={metrics} />}
+        {activeTab === 'referral-patterns'  && <ReferralPatterns />}
+        {activeTab === 'disease-management' && <DiseaseManagement />}
 
       </main>
     </div>
