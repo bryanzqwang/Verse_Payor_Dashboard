@@ -1,0 +1,19 @@
+import { type MetricCardData } from '@/components/MetricCard';
+import { MetricCard } from '@/components/MetricCard';
+import { StatBox } from '@/components/StatBox';
+
+export function UtilizationCost({ metrics }: { metrics: MetricCardData[] }) {
+  return (
+    <div className="flex flex-col gap-6">
+      <h1 className="text-3xl font-bold text-[#093a5b]">Utilization & Cost</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
+        <StatBox label="% of Claims Paid to Verse" value="88.7%" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {metrics[0] && <MetricCard card={metrics[0]} />}
+        {metrics[1] && <MetricCard card={metrics[1]} />}
+      </div>
+    </div>
+  );
+}
