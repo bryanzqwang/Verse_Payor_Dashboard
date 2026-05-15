@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { type MetricCardData } from '@/components/MetricCard';
 import { loadCsv } from '@/lib/loadCsv';
-import { Overview } from '@/components/tabs/Overview';
-import { ServiceQuality } from '@/components/tabs/ServiceQuality';
-import { UtilizationCost } from '@/components/tabs/UtilizationCost';
-import { ReferralPatterns } from '@/components/tabs/ReferralPatterns';
-import { DiseaseManagement } from '@/components/tabs/DiseaseManagement';
+import { Overview } from '@/app/tabs/Overview';
+import { ServiceQuality } from '@/app/tabs/ServiceQuality';
+import { UtilizationCost } from '@/app/tabs/UtilizationCost';
+import { ReferralPatterns } from '@/app/tabs/ReferralPatterns';
+import { DiseaseManagement } from '@/app/tabs/DiseaseManagement';
 
 const initialMetricCards: Omit<MetricCardData, 'value' | 'chartData' | 'secondaryChartData'>[] = [
   {
