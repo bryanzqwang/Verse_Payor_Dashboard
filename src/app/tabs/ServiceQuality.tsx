@@ -24,7 +24,7 @@ interface MetricRow {
 interface SubcontractorData {
   name: string;
   onTimeDeliveryRate: string;
-  deliveryData: { product: string; hours: number }[];
+  deliveryData: { product: string; hours: number | null }[];
 }
 
 const VERSE_MEDICAL = 'Verse Medical';
@@ -113,13 +113,23 @@ export function ServiceQuality() {
       const subPerfRows = (Papa.parse(subPerfCsv, { header: true }).data as SubcontractorRow[]).filter((r) => r.supplier);
       const deliveryRows = (Papa.parse(deliveryCsv, { header: true }).data as DeliveryRow[]).filter((r) => r.supplier);
 
-      const built = subPerfRows.map((row) => ({
-        name: row.supplier,
-        onTimeDeliveryRate: row.onTimeDeliveryRate,
-        deliveryData: deliveryRows
-          .filter((r) => r.supplier === row.supplier)
-          .map((r) => ({ product: r.product, hours: parseFloat(r.days) })),
-      }));
+      const allProducts: string[] = [];
+      deliveryRows.forEach((r) => {
+        if (!allProducts.includes(r.product)) allProducts.push(r.product);
+      });
+      allProducts.sort((a, b) => a.localeCompare(b));
+
+      const built = subPerfRows.map((row) => {
+        const supplierRows = deliveryRows.filter((r) => r.supplier === row.supplier);
+        return {
+          name: row.supplier,
+          onTimeDeliveryRate: row.onTimeDeliveryRate,
+          deliveryData: allProducts.map((product) => {
+            const match = supplierRows.find((r) => r.product === product);
+            return { product, hours: match ? parseFloat(match.days) : null };
+          }),
+        };
+      });
 
       setSubcontractors(built);
       setSelectedSubcontractor((prev) => prev || built[0]?.name || '');
@@ -153,7 +163,7 @@ export function ServiceQuality() {
             />
             <PerformancePanel title="Experience" metrics={experience} muted={!isVerse} />
           </div>
-          <div className="h-[400px] md:h-[600px]">
+          <div className="h-[600px] md:h-[900px]">
             <AvgDeliveryTimeChart
               data={subcontractor.deliveryData}
               title="On-Time Delivery Rate"
