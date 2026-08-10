@@ -2,40 +2,39 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Papa from 'papaparse';
-import { ServiceCategoryCard } from '@/components/ServiceCategoryCard';
+import { PerformancePanel, type PerformanceMetric } from '@/components/PerformancePanel';
 import { AvgDeliveryTimeChart } from '@/components/AvgDeliveryTimeChart';
 
-interface CategoryMetric {
-  category: string;
-  slaRate: string;
-  avgDelivery: string;
-}
-
-interface SupplierServiceQuality {
-  name: string;
-  categories: CategoryMetric[];
-  deliveryData: { product: string; hours: number }[];
-}
-
-interface CategoryRow {
+interface SubcontractorRow {
   supplier: string;
-  category: string;
-  slaRate: string;
-  avgDeliveryHours: string;
+  onTimeDeliveryRate: string;
 }
 
 interface DeliveryRow {
   supplier: string;
   product: string;
-  hours: string;
+  days: string;
 }
 
-function SupplierDropdown({
-  suppliers,
+interface MetricRow {
+  metric: string;
+  value: string;
+}
+
+interface SubcontractorData {
+  name: string;
+  onTimeDeliveryRate: string;
+  deliveryData: { product: string; hours: number }[];
+}
+
+const VERSE_MEDICAL = 'Verse Medical';
+
+function SubcontractorDropdown({
+  subcontractors,
   selected,
   onSelect,
 }: {
-  suppliers: SupplierServiceQuality[];
+  subcontractors: string[];
   selected: string;
   onSelect: (name: string) => void;
 }) {
@@ -56,25 +55,25 @@ function SupplierDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white text-[#093a5b] font-medium flex items-center gap-2 hover:bg-gray-50 min-w-[200px] justify-between shadow-sm"
+        className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white text-[#093a5b] font-medium flex items-center gap-2 hover:bg-gray-50 min-w-[220px] justify-between shadow-sm"
       >
         <span className="truncate">{selected}</span>
         <span className="flex-shrink-0 text-xs text-gray-400">{open ? '▴' : '▾'}</span>
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-20 min-w-[200px] overflow-hidden">
-          {suppliers.map((s) => (
+        <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-20 min-w-[220px] overflow-hidden">
+          {subcontractors.map((name) => (
             <div
-              key={s.name}
+              key={name}
               onClick={() => {
-                onSelect(s.name);
+                onSelect(name);
                 setOpen(false);
               }}
               className={`px-3 py-2 text-sm cursor-pointer ${
-                selected === s.name ? 'bg-[#e6f2fa] text-[#093a5b] font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                selected === name ? 'bg-[#e6f2fa] text-[#093a5b] font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              {s.name}
+              {name}
             </div>
           ))}
         </div>
@@ -84,56 +83,85 @@ function SupplierDropdown({
 }
 
 export function ServiceQuality() {
-  const [suppliers, setSuppliers] = useState<SupplierServiceQuality[]>([]);
-  const [selectedSupplier, setSelectedSupplier] = useState<string>('');
+  const [overallPerformance, setOverallPerformance] = useState<PerformanceMetric[]>([]);
+  const [versePerformance, setVersePerformance] = useState<PerformanceMetric[]>([]);
+  const [experience, setExperience] = useState<PerformanceMetric[]>([]);
+  const [subcontractors, setSubcontractors] = useState<SubcontractorData[]>([]);
+  const [selectedSubcontractor, setSelectedSubcontractor] = useState<string>('');
 
   useEffect(() => {
     Promise.all([
-      fetch('/data/service-quality-categories.csv').then((r) => r.text()),
+      fetch('/data/service-quality-overall-performance.csv').then((r) => r.text()),
+      fetch('/data/service-quality-verse-performance.csv').then((r) => r.text()),
+      fetch('/data/service-quality-experience.csv').then((r) => r.text()),
+      fetch('/data/service-quality-subcontractor-performance.csv').then((r) => r.text()),
       fetch('/data/service-quality-delivery-time.csv').then((r) => r.text()),
-    ]).then(([categoriesCsv, deliveryCsv]) => {
-      const categoryRows = (Papa.parse(categoriesCsv, { header: true }).data as CategoryRow[]).filter((r) => r.supplier);
+    ]).then(([overallCsv, verseCsv, experienceCsv, subPerfCsv, deliveryCsv]) => {
+      const toMetrics = (csv: string) =>
+        (Papa.parse(csv, { header: true }).data as MetricRow[])
+          .filter((r) => r.metric)
+          .map((r) => ({ label: r.metric, value: `${r.value}%` }));
+
+      setOverallPerformance(toMetrics(overallCsv));
+      setVersePerformance(toMetrics(verseCsv));
+      setExperience(
+        (Papa.parse(experienceCsv, { header: true }).data as MetricRow[])
+          .filter((r) => r.metric)
+          .map((r) => ({ label: r.metric, value: r.value }))
+      );
+
+      const subPerfRows = (Papa.parse(subPerfCsv, { header: true }).data as SubcontractorRow[]).filter((r) => r.supplier);
       const deliveryRows = (Papa.parse(deliveryCsv, { header: true }).data as DeliveryRow[]).filter((r) => r.supplier);
 
-      const supplierOrder: string[] = [];
-      categoryRows.forEach((r) => {
-        if (!supplierOrder.includes(r.supplier)) supplierOrder.push(r.supplier);
-      });
-
-      const built = supplierOrder.map((name) => ({
-        name,
-        categories: categoryRows
-          .filter((r) => r.supplier === name)
-          .map((r) => ({ category: r.category, slaRate: `${r.slaRate}%`, avgDelivery: `${r.avgDeliveryHours}h` })),
+      const built = subPerfRows.map((row) => ({
+        name: row.supplier,
+        onTimeDeliveryRate: row.onTimeDeliveryRate,
         deliveryData: deliveryRows
-          .filter((r) => r.supplier === name)
-          .map((r) => ({ product: r.product, hours: parseFloat(r.hours) })),
+          .filter((r) => r.supplier === row.supplier)
+          .map((r) => ({ product: r.product, hours: parseFloat(r.days) })),
       }));
 
-      setSuppliers(built);
-      setSelectedSupplier((prev) => prev || built[0]?.name || '');
+      setSubcontractors(built);
+      setSelectedSubcontractor((prev) => prev || built[0]?.name || '');
     });
   }, []);
 
-  const supplier = suppliers.find((s) => s.name === selectedSupplier);
+  const subcontractor = subcontractors.find((s) => s.name === selectedSubcontractor);
+  const isVerse = selectedSubcontractor === VERSE_MEDICAL;
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-[#093a5b]">Service Quality</h1>
-        {suppliers.length > 0 && (
-          <SupplierDropdown suppliers={suppliers} selected={selectedSupplier} onSelect={setSelectedSupplier} />
+        {subcontractors.length > 0 && (
+          <SubcontractorDropdown
+            subcontractors={subcontractors.map((s) => s.name)}
+            selected={selectedSubcontractor}
+            onSelect={setSelectedSubcontractor}
+          />
         )}
       </div>
-      {supplier && (
+      {subcontractor && (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {supplier.categories.map((c) => (
-              <ServiceCategoryCard key={c.category} category={c.category} slaRate={c.slaRate} avgDelivery={c.avgDelivery} />
-            ))}
+            <PerformancePanel title="Overall Performance" metrics={overallPerformance} muted={!isVerse} large />
+            <PerformancePanel title="Verse Performance" metrics={versePerformance} muted={!isVerse} />
+            <PerformancePanel
+              title="Subcontractor Performance"
+              metrics={[{ label: 'On-Time Delivery Rate', value: `${subcontractor.onTimeDeliveryRate}%` }]}
+              large
+            />
+            <PerformancePanel title="Experience" metrics={experience} muted={!isVerse} />
           </div>
           <div className="h-[400px] md:h-[600px]">
-            <AvgDeliveryTimeChart data={supplier.deliveryData} />
+            <AvgDeliveryTimeChart
+              data={subcontractor.deliveryData}
+              title="On-Time Delivery Rate"
+              unit="d"
+              unitLabel="days"
+              tickStep={2}
+              minAxisMax={10}
+            />
           </div>
         </>
       )}

@@ -1,96 +1,84 @@
-supplier,product,hours
-Verse Medical,Ambulatory,10
-Verse Medical,Bath Supplies,15
-Verse Medical,Bed Supplies,20
-Verse Medical,Compression,12
-Verse Medical,CPAP/BiPAP Supplies,48
-Verse Medical,Diabetes,36
-Verse Medical,Enteral,24
-Verse Medical,Incontinence,18
-Verse Medical,Living Aids,30
-Verse Medical,Maternal,8
-Verse Medical,Mobility,40
-Verse Medical,Ostomy,18
-Verse Medical,Post Mastectomy,14
-Verse Medical,Rehabilitation,25
-Verse Medical,Respiratory Supplies,48
-Verse Medical,Skincare,20
-Verse Medical,Urology,16
-Verse Medical,Wound Care,22
-Verse Medical,Specialty & LTSS Products,30
-Apex Home Medical,Ambulatory,16
-Apex Home Medical,Bath Supplies,21
-Apex Home Medical,Bed Supplies,27
-Apex Home Medical,Compression,18
-Apex Home Medical,CPAP/BiPAP Supplies,59
-Apex Home Medical,Diabetes,45
-Apex Home Medical,Enteral,32
-Apex Home Medical,Incontinence,25
-Apex Home Medical,Living Aids,39
-Apex Home Medical,Maternal,13
-Apex Home Medical,Mobility,50
-Apex Home Medical,Ostomy,25
-Apex Home Medical,Post Mastectomy,20
-Apex Home Medical,Rehabilitation,33
-Apex Home Medical,Respiratory Supplies,59
-Apex Home Medical,Skincare,27
-Apex Home Medical,Urology,22
-Apex Home Medical,Wound Care,29
-Apex Home Medical,Specialty & LTSS Products,39
-Coastal DME Solutions,Ambulatory,13
-Coastal DME Solutions,Bath Supplies,18
-Coastal DME Solutions,Bed Supplies,23
-Coastal DME Solutions,Compression,15
-Coastal DME Solutions,CPAP/BiPAP Supplies,52
-Coastal DME Solutions,Diabetes,40
-Coastal DME Solutions,Enteral,27
-Coastal DME Solutions,Incontinence,21
-Coastal DME Solutions,Living Aids,34
-Coastal DME Solutions,Maternal,10
-Coastal DME Solutions,Mobility,44
-Coastal DME Solutions,Ostomy,21
-Coastal DME Solutions,Post Mastectomy,17
-Coastal DME Solutions,Rehabilitation,28
-Coastal DME Solutions,Respiratory Supplies,52
-Coastal DME Solutions,Skincare,23
-Coastal DME Solutions,Urology,19
-Coastal DME Solutions,Wound Care,25
-Coastal DME Solutions,Specialty & LTSS Products,34
-Summit Health Equipment,Ambulatory,6
-Summit Health Equipment,Bath Supplies,10
-Summit Health Equipment,Bed Supplies,14
-Summit Health Equipment,Compression,7
-Summit Health Equipment,CPAP/BiPAP Supplies,38
-Summit Health Equipment,Diabetes,28
-Summit Health Equipment,Enteral,17
-Summit Health Equipment,Incontinence,12
-Summit Health Equipment,Living Aids,23
-Summit Health Equipment,Maternal,4
-Summit Health Equipment,Mobility,31
-Summit Health Equipment,Ostomy,12
-Summit Health Equipment,Post Mastectomy,9
-Summit Health Equipment,Rehabilitation,18
-Summit Health Equipment,Respiratory Supplies,38
-Summit Health Equipment,Skincare,14
-Summit Health Equipment,Urology,11
-Summit Health Equipment,Wound Care,16
-Summit Health Equipment,Specialty & LTSS Products,23
-Pinnacle Care Supply,Ambulatory,20
-Pinnacle Care Supply,Bath Supplies,26
-Pinnacle Care Supply,Bed Supplies,33
-Pinnacle Care Supply,Compression,22
-Pinnacle Care Supply,CPAP/BiPAP Supplies,71
-Pinnacle Care Supply,Diabetes,55
-Pinnacle Care Supply,Enteral,38
-Pinnacle Care Supply,Incontinence,30
-Pinnacle Care Supply,Living Aids,47
-Pinnacle Care Supply,Maternal,17
-Pinnacle Care Supply,Mobility,60
-Pinnacle Care Supply,Ostomy,30
-Pinnacle Care Supply,Post Mastectomy,25
-Pinnacle Care Supply,Rehabilitation,40
-Pinnacle Care Supply,Respiratory Supplies,71
-Pinnacle Care Supply,Skincare,33
-Pinnacle Care Supply,Urology,28
-Pinnacle Care Supply,Wound Care,36
-Pinnacle Care Supply,Specialty & LTSS Products,47
+supplier,product,days
+Verse Medical,Ambulatory,3
+Verse Medical,Bath,2
+Verse Medical,CPAP/BIPAP,2
+Verse Medical,Diabetic Supplies,2
+Verse Medical,Enteral Nutrition,4
+Verse Medical,Hospital Bed,2
+Verse Medical,Incontinence,2
+Verse Medical,Nebulizer,2
+Verse Medical,Orthotics,2
+Verse Medical,Ostomy,2
+Verse Medical,Prosthetics - Compression,2
+Verse Medical,Stimulator,3
+Verse Medical,Supplies,4
+Verse Medical,Tracheostomy,2
+Verse Medical,Urology,2
+Verse Medical,Wheelchair - Manual,4
+Verse Medical,Wound Care,2
+Verse Medical,Other,4
+Apex Home Medical,Ambulatory,8
+Apex Home Medical,CPAP/BIPAP,4
+Apex Home Medical,Diabetic Supplies,5
+Apex Home Medical,Enteral Nutrition,4
+Apex Home Medical,Incontinence,3
+Apex Home Medical,Nebulizer,4
+Apex Home Medical,Orthotics,1
+Apex Home Medical,Ostomy,2
+Apex Home Medical,Oxygen,3
+Apex Home Medical,Oxygen Portable,3
+Apex Home Medical,Prosthetics,1
+Apex Home Medical,Supplies,2
+Apex Home Medical,Tracheostomy,2
+Apex Home Medical,Urology,5
+Apex Home Medical,Ventilator,1
+Apex Home Medical,Wheelchair - Manual,6
+Coastal DME Solutions,Ambulatory,2
+Coastal DME Solutions,Bath,3
+Coastal DME Solutions,CPAP/BIPAP,4
+Coastal DME Solutions,Diabetic Supplies,1
+Coastal DME Solutions,Enteral Nutrition,3
+Coastal DME Solutions,Hospital Bed,3
+Coastal DME Solutions,Nebulizer,4
+Coastal DME Solutions,Oxygen,2
+Coastal DME Solutions,Oxygen Portable,1
+Coastal DME Solutions,Prosthetics,1
+Coastal DME Solutions,Prosthetics - Compression,5
+Coastal DME Solutions,Respiratory - Other,4
+Coastal DME Solutions,Tracheostomy,4
+Coastal DME Solutions,Ventilator,2
+Coastal DME Solutions,Wheelchair - Manual,2
+Coastal DME Solutions,Wound Suction,3
+Pinnacle Care Supply,Ambulatory,4
+Pinnacle Care Supply,Bath,5
+Pinnacle Care Supply,CPAP/BIPAP,2
+Pinnacle Care Supply,CPM,5
+Pinnacle Care Supply,Diabetic Supplies,2
+Pinnacle Care Supply,Enteral Nutrition,9
+Pinnacle Care Supply,Hospital Bed,3
+Pinnacle Care Supply,Nebulizer,8
+Pinnacle Care Supply,Orthotics,7
+Pinnacle Care Supply,Ostomy,4
+Pinnacle Care Supply,Oxygen,3
+Pinnacle Care Supply,Oxygen Portable,2
+Pinnacle Care Supply,Prosthetics - Compression,3
+Pinnacle Care Supply,Stimulator,4
+Pinnacle Care Supply,Supplies,1
+Pinnacle Care Supply,Tracheostomy,4
+Pinnacle Care Supply,Urology,1
+Pinnacle Care Supply,Ventilator,6
+Pinnacle Care Supply,Wheelchair - Power & Custom,4
+Pinnacle Care Supply,Wound Care,5
+Pinnacle Care Supply,Other,2
+Specialty DME Co,AED,4
+Specialty DME Co,CPM,3
+Specialty DME Co,Hospital Bed,6
+Specialty DME Co,Pneumatic Compression,5
+Specialty DME Co,Prosthetics,5
+Specialty DME Co,Respiratory - Other,3
+Specialty DME Co,Stimulator,4
+Specialty DME Co,Stimulator Bone,7
+Specialty DME Co,Vest Therapy,4
+Specialty DME Co,Wheelchair - Power & Custom,4
+Specialty DME Co,Wound Suction,6
+Specialty DME Co,Other,3
