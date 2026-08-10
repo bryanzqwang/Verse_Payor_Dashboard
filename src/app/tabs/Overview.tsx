@@ -9,7 +9,7 @@ export function Overview({ metrics }: { metrics: MetricCardData[] }) {
     <div className="flex flex-col gap-6">
       <h1 className="text-3xl font-bold text-[#093a5b]">Overview</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <StatBox label="Average Delivery Time" value="34 hours" />
+        <StatBox label="On-Time Delivery Rate" value="95%" />
         <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
