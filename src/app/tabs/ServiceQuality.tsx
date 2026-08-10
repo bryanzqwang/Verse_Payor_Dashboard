@@ -166,7 +166,7 @@ export function ServiceQuality() {
           <div className="h-[600px] md:h-[900px]">
             <AvgDeliveryTimeChart
               data={subcontractor.deliveryData}
-              title="On-Time Delivery Rate"
+              title="Avg. Delivery Time by Product Category"
               unit="d"
               unitLabel="days"
               tickStep={2}

@@ -44,9 +44,10 @@ export function AvgDeliveryTimeChart({
       .then((csv) => {
         const parsed = Papa.parse(csv, { header: true });
         setFetchedData(
-          (parsed.data as { product: string; hours: string }[])
+          (parsed.data as { product: string; days: string }[])
             .filter((r) => r.product)
-            .map((r) => ({ product: r.product, hours: parseFloat(r.hours) }))
+            .map((r) => ({ product: r.product, hours: parseFloat(r.days) }))
+            .sort((a, b) => a.product.localeCompare(b.product))
         );
       });
   }, [overrideData]);

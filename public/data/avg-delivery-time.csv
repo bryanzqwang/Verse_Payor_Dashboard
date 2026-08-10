@@ -1,20 +1,31 @@
-product,hours
-Ambulatory, 10
-Bath Supplies, 15
-Bed Supplies, 20
-Compression, 12
-CPAP/BiPAP Supplies, 48
-Diabetes, 36
-Enteral, 24
-Incontinence, 18
-Living Aids, 30
-Maternal, 8
-Mobility, 40
-Ostomy, 18
-Post Mastectomy, 14
-Rehabilitation, 25
-Respiratory Supplies, 48
-Skincare, 20
-Urology, 16
-Wound Care, 22
-Specialty & LTSS Products, 30
+product,days
+AED,4
+Ambulatory,4
+Bath,3
+CPAP/BIPAP,3
+CPM,4
+Diabetic Supplies,2
+Enteral Nutrition,5
+Hospital Bed,4
+Incontinence,2
+Nebulizer,5
+Orthotics,3
+Ostomy,2
+Other,3
+Oxygen,3
+Oxygen Portable,2
+Pneumatic Compression,5
+Prosthetics,2
+Prosthetics - Compression,3
+Respiratory - Other,4
+Stimulator,4
+Stimulator Bone,7
+Supplies,2
+Tracheostomy,2
+Urology,2
+Ventilator,3
+Vest Therapy,4
+Wheelchair - Manual,4
+Wheelchair - Power & Custom,4
+Wound Care,2
+Wound Suction,5

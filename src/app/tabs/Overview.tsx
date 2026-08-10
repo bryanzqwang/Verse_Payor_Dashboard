@@ -13,8 +13,12 @@ export function Overview({ metrics }: { metrics: MetricCardData[] }) {
         <StatBox label="Performance Period Spend YTD (3-month lag)" value="$2.3M" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-        {metrics[0] && <MetricCard card={metrics[0]} />}
-        <AvgDeliveryTimeChart />
+        <div className="md:h-[680px]">
+          {metrics[0] && <MetricCard card={metrics[0]} className="h-full" />}
+        </div>
+        <div className="h-[460px] md:h-[680px]">
+          <AvgDeliveryTimeChart unit="d" unitLabel="days" tickStep={2} minAxisMax={10} />
+        </div>
       </div>
       <FacilityTable />
     </div>

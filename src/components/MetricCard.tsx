@@ -63,10 +63,10 @@ function CategoryTable({
   ];
 
   return (
-    <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex-1 flex flex-col min-w-0 min-h-0">
       {label && <p className="text-sm font-medium text-gray-500 mb-2 text-center">{label}</p>}
-      <div className="relative rounded-lg overflow-hidden">
-        <div ref={scrollRef} className="overflow-y-auto max-h-[320px]" onScroll={handleScroll}>
+      <div className="relative rounded-lg overflow-hidden flex-1 min-h-0">
+        <div ref={scrollRef} className="h-full overflow-y-auto" onScroll={handleScroll}>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="bg-gray-100">
@@ -188,7 +188,7 @@ function Chart({
   };
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col min-h-0">
       <div className="flex items-center justify-between mb-1">
         {label && <p className="text-sm font-medium text-gray-500">{label}</p>}
         <div ref={dropdownRef} className="relative">
@@ -217,7 +217,7 @@ function Chart({
           )}
         </div>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis dataKey="name" />
@@ -260,9 +260,9 @@ export function MetricCard({ card, className }: { card: MetricCardData; classNam
   return (
     <div className={`bg-white p-6 rounded-lg shadow min-h-[500px] flex flex-col ${className ?? ''}`}>
       <h2 className="text-xl font-semibold text-[#093a5b] mb-10">{card.title}</h2>
-      <div className="flex gap-6 flex-1">
+      <div className="flex gap-6 flex-1 min-h-0">
         {card.secondaryChartData && (
-          <div className="flex-1 flex flex-col max-h-[380px]">
+          <div className="flex-1 flex flex-col min-h-0">
             <p className={`text-5xl font-bold ${card.color} mb-4 text-center`}>{card.units ?? ''}{displayValue}</p>
             <Chart
               chartData={card.secondaryChartData}
@@ -274,7 +274,7 @@ export function MetricCard({ card, className }: { card: MetricCardData; classNam
           </div>
         )}
         {card.chartData && (
-          <div className="flex-1 flex flex-col border-l pl-6 pt-[16px]">
+          <div className="flex-1 flex flex-col border-l pl-6 pt-[16px] min-h-0">
             <CategoryTable
               chartData={card.chartData}
               label={card.primaryTitle}
