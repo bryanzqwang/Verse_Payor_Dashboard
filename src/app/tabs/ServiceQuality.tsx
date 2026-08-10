@@ -168,7 +168,7 @@ export function ServiceQuality() {
               large
             />
             <PerformancePanel
-              title="Network Performance"
+              title="Subcontractor Performance"
               metrics={[{ label: 'On-Time Delivery Rate', value: `${subcontractor.onTimeDeliveryRate}%` }]}
               muted={selectedSubcontractor === VERSE_MEDICAL}
               large
