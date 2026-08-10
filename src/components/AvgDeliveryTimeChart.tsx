@@ -4,21 +4,24 @@ import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-export function AvgDeliveryTimeChart() {
-  const [data, setData] = useState<{ product: string; hours: number }[]>([]);
+export function AvgDeliveryTimeChart({ data: overrideData }: { data?: { product: string; hours: number }[] } = {}) {
+  const [fetchedData, setFetchedData] = useState<{ product: string; hours: number }[]>([]);
 
   useEffect(() => {
+    if (overrideData) return;
     fetch('/data/avg-delivery-time.csv')
       .then((r) => r.text())
       .then((csv) => {
         const parsed = Papa.parse(csv, { header: true });
-        setData(
+        setFetchedData(
           (parsed.data as { product: string; hours: string }[])
             .filter((r) => r.product)
             .map((r) => ({ product: r.product, hours: parseFloat(r.hours) }))
         );
       });
-  }, []);
+  }, [overrideData]);
+
+  const data = overrideData ?? fetchedData;
 
   const maxHours = data.length ? Math.ceil(Math.max(...data.map((d) => d.hours)) / 12) * 12 : 132;
   const ticks = Array.from({ length: maxHours / 12 + 1 }, (_, i) => i * 12);
