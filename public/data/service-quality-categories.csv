@@ -1,0 +1,21 @@
+supplier,category,slaRate,avgDeliveryHours
+Verse Medical,Bent Metal,91,18
+Verse Medical,Discharge,87,6
+Verse Medical,Mail Order,94,37
+Verse Medical,Oxygen,89,24
+Apex Home Medical,Bent Metal,84,26
+Apex Home Medical,Discharge,79,11
+Apex Home Medical,Mail Order,88,45
+Apex Home Medical,Oxygen,81,33
+Coastal DME Solutions,Bent Metal,88,21
+Coastal DME Solutions,Discharge,82,9
+Coastal DME Solutions,Mail Order,90,40
+Coastal DME Solutions,Oxygen,85,29
+Summit Health Equipment,Bent Metal,93,15
+Summit Health Equipment,Discharge,90,5
+Summit Health Equipment,Mail Order,96,33
+Summit Health Equipment,Oxygen,92,20
+Pinnacle Care Supply,Bent Metal,79,31
+Pinnacle Care Supply,Discharge,74,14
+Pinnacle Care Supply,Mail Order,83,52
+Pinnacle Care Supply,Oxygen,77,38
