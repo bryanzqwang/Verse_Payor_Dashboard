@@ -155,14 +155,24 @@ export function ServiceQuality() {
       {subcontractor && (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <PerformancePanel title="Overall Performance" metrics={overallPerformance} muted={!showFullData} large />
             <PerformancePanel
-              title="Subcontractor Performance"
+              title="Overall Performance"
+              metrics={overallPerformance}
+              muted={selectedSubcontractor !== OVERALL}
+              large
+            />
+            <PerformancePanel
+              title="Verse Performance"
+              metrics={versePerformance.filter((m) => m.label === 'On-Time Delivery Rate')}
+              muted={!showFullData}
+              large
+            />
+            <PerformancePanel
+              title="Network Performance"
               metrics={[{ label: 'On-Time Delivery Rate', value: `${subcontractor.onTimeDeliveryRate}%` }]}
               muted={selectedSubcontractor === VERSE_MEDICAL}
               large
             />
-            <PerformancePanel title="Verse Performance" metrics={versePerformance} isStatic />
             <PerformancePanel title="Experience" metrics={experience} isStatic />
           </div>
           <div className="h-[600px] md:h-[900px]">
