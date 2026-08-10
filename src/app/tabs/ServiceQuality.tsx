@@ -28,6 +28,7 @@ interface SubcontractorData {
 }
 
 const VERSE_MEDICAL = 'Verse Medical';
+const OVERALL = 'Overall';
 
 function SubcontractorDropdown({
   subcontractors,
@@ -137,7 +138,7 @@ export function ServiceQuality() {
   }, []);
 
   const subcontractor = subcontractors.find((s) => s.name === selectedSubcontractor);
-  const isVerse = selectedSubcontractor === VERSE_MEDICAL;
+  const showFullData = selectedSubcontractor === VERSE_MEDICAL || selectedSubcontractor === OVERALL;
 
   return (
     <div className="flex flex-col gap-6">
@@ -154,14 +155,15 @@ export function ServiceQuality() {
       {subcontractor && (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <PerformancePanel title="Overall Performance" metrics={overallPerformance} muted={!isVerse} large />
-            <PerformancePanel title="Verse Performance" metrics={versePerformance} muted={!isVerse} />
+            <PerformancePanel title="Overall Performance" metrics={overallPerformance} muted={!showFullData} large />
             <PerformancePanel
               title="Subcontractor Performance"
               metrics={[{ label: 'On-Time Delivery Rate', value: `${subcontractor.onTimeDeliveryRate}%` }]}
+              muted={selectedSubcontractor === VERSE_MEDICAL}
               large
             />
-            <PerformancePanel title="Experience" metrics={experience} muted={!isVerse} />
+            <PerformancePanel title="Verse Performance" metrics={versePerformance} isStatic />
+            <PerformancePanel title="Experience" metrics={experience} isStatic />
           </div>
           <div className="h-[600px] md:h-[900px]">
             <AvgDeliveryTimeChart

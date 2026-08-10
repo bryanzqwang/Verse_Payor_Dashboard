@@ -1,4 +1,34 @@
 supplier,product,days
+Overall,AED,4
+Overall,Ambulatory,4
+Overall,Bath,3
+Overall,CPAP/BIPAP,3
+Overall,CPM,4
+Overall,Diabetic Supplies,2
+Overall,Enteral Nutrition,5
+Overall,Hospital Bed,4
+Overall,Incontinence,2
+Overall,Nebulizer,5
+Overall,Orthotics,3
+Overall,Ostomy,2
+Overall,Other,3
+Overall,Oxygen,3
+Overall,Oxygen Portable,2
+Overall,Pneumatic Compression,5
+Overall,Prosthetics,2
+Overall,Prosthetics - Compression,3
+Overall,Respiratory - Other,4
+Overall,Stimulator,4
+Overall,Stimulator Bone,7
+Overall,Supplies,2
+Overall,Tracheostomy,2
+Overall,Urology,2
+Overall,Ventilator,3
+Overall,Vest Therapy,4
+Overall,Wheelchair - Manual,4
+Overall,Wheelchair - Power & Custom,4
+Overall,Wound Care,2
+Overall,Wound Suction,5
 Verse Medical,Ambulatory,3
 Verse Medical,Bath,2
 Verse Medical,CPAP/BIPAP,2
